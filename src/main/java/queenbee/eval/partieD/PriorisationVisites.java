@@ -26,20 +26,49 @@ import java.util.List;
  */
 public class PriorisationVisites {
 
-    // TODO D : constantes nommées (seuils et points)
+    private static final double SEUIL_TEMPERATURE_C = 38.0;
+    private static final double SEUIL_HUMIDITE_PCT = 90.0;
+    private static final double SEUIL_PERTE_POIDS_KG = 2.5;
+    private static final int SEUIL_JOURS_SANS_VISITE = 15;
+
+    private static final int POINTS_TEMPERATURE = 3;
+    private static final int POINTS_HUMIDITE = 2;
+    private static final int POINTS_PERTE_POIDS = 4;
+    private static final int POINTS_VISITE = 1;
+
+    private record RucheScoree(String id, int score) {
+    }
 
     /**
      * @return les lignes "id : score" des ruches du site ayant un score > 0,
      *         triées par score décroissant puis par identifiant
      */
     public List<String> visitesPrioritaires(List<EtatRuche> etats, String site) {
-        // TODO D
-        throw new UnsupportedOperationException("TODO D");
+        return etats.stream()
+                .filter(etat -> etat.site().equals(site))
+                .map(etat -> new RucheScoree(etat.id(), scoreDeRisque(etat)))
+                .filter(ruche -> ruche.score() > 0)
+                .sorted(Comparator.comparingInt(RucheScoree::score).reversed()
+                        .thenComparing(RucheScoree::id))
+                .map(ruche -> ruche.id() + " : " + ruche.score())
+                .toList();
     }
 
     /** @return le score de risque d'une ruche (0 à 10) */
     public int scoreDeRisque(EtatRuche etat) {
-        // TODO D
-        throw new UnsupportedOperationException("TODO D");
+        int score = 0;
+        if (etat.temperatureC() > SEUIL_TEMPERATURE_C) {
+            score += POINTS_TEMPERATURE;
+        }
+        if (etat.humiditePct() > SEUIL_HUMIDITE_PCT) {
+            score += POINTS_HUMIDITE;
+        }
+        if (etat.perteDePoidsKg() > SEUIL_PERTE_POIDS_KG) {
+            score += POINTS_PERTE_POIDS;
+        }
+        if (etat.joursDepuisDerniereVisite() > SEUIL_JOURS_SANS_VISITE) {
+            score += POINTS_VISITE;
+        }
+        return score;
     }
 }
