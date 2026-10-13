@@ -40,16 +40,14 @@ public final class ReglesAlerte {
      * A1 (0,5 pt) — Surchauffe : température STRICTEMENT supérieure à 38 °C.
      */
     public static RegleAlerte surchauffe() {
-        // TODO A1
-        throw new UnsupportedOperationException("TODO A1");
+        return m -> m.temperatureC() > SEUIL_SURCHAUFFE_C;
     }
 
     /**  Expressions Lambda
      * A2 (0,5 pt) — Humidité excessive : humidité STRICTEMENT supérieure à 90 %.
      */
     public static RegleAlerte humiditeExcessive() {
-        // TODO A2
-        throw new UnsupportedOperationException("TODO A2");
+        return m -> m.humiditePct() > SEUIL_HUMIDITE_PCT;
     }
 
     /**
@@ -58,8 +56,14 @@ public final class ReglesAlerte {
      * puis retournez leur composition avec and().
      */
     public static Predicate<Mesure> estPlausible() {
-        // TODO A3
-        throw new UnsupportedOperationException("TODO A3");
+        Predicate<Mesure> temperatureOk = m -> m.temperatureC() >= TEMPERATURE_MIN_C
+                && m.temperatureC() <= TEMPERATURE_MAX_C;
+        Predicate<Mesure> humiditeOk = m -> m.humiditePct() >= HUMIDITE_MIN_PCT
+                && m.humiditePct() <= HUMIDITE_MAX_PCT;
+        Predicate<Mesure> poidsOk = m -> m.poidsKg() >= POIDS_MIN_KG
+                && m.poidsKg() <= POIDS_MAX_KG;
+
+        return temperatureOk.and(humiditeOk).and(poidsOk);
     }
 
     /**
@@ -67,7 +71,6 @@ public final class ReglesAlerte {
      * Indice : Comparator.comparing(...) avec une référence de méthode, puis reversed().
      */
     public static Comparator<Mesure> plusRecentesDAbord() {
-        // TODO A4
-        throw new UnsupportedOperationException("TODO A4");
+        return Comparator.comparing(Mesure::horodatage).reversed();
     }
 }
