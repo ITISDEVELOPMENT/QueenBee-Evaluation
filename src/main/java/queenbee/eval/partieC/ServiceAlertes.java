@@ -17,8 +17,15 @@ public class ServiceAlertes {
 
     // TODO C2 : déclarer les trois dépendances (private final, typées par les abstractions)
 
+    private final EvaluateurRisques evaluateur;
+    private final CanalNotification canal;
+    private final JournalAlertes journal;
+
     public ServiceAlertes(EvaluateurRisques evaluateur, CanalNotification canal, JournalAlertes journal) {
         // TODO C2 : mémoriser les dépendances reçues
+        this.evaluateur = evaluateur;
+        this.canal = canal;
+        this.journal = journal;
     }
 
     /**
@@ -31,6 +38,16 @@ public class ServiceAlertes {
      */
     public int traiter(Mesure mesure, String destinataire) {
         // TODO C2
-        throw new UnsupportedOperationException("TODO C2");
+        List<String> nomsRisques = evaluateur.risquesDetectes(mesure);
+
+        for (String nomRisque : nomsRisques) {
+            String message = "[" + mesure.rucheId() + "] " + nomRisque;
+            canal.envoyer(destinataire, message);
+            journal.ajouter(message);
+        }
+
+        return nomsRisques.size();
     }
+
+
 }

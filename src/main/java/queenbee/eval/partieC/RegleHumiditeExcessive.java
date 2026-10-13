@@ -16,12 +16,12 @@ public class RegleHumiditeExcessive implements RegleRisque {
     @Override
     public String nom() {
         // TODO C1
-        throw new UnsupportedOperationException("TODO C1");
+        return "Humidite excessive";
     }
 
     @Override
     public boolean estDeclenchee(Mesure mesure) {
         // TODO C1
-        throw new UnsupportedOperationException("TODO C1");
+        return mesure.humiditePct() > 90;
     }
 }

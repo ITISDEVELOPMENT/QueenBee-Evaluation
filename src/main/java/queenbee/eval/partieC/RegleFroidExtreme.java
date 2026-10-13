@@ -14,12 +14,12 @@ public class RegleFroidExtreme implements RegleRisque {
     @Override
     public String nom() {
         // TODO C1
-        throw new UnsupportedOperationException("TODO C1");
+        return "Froid extreme";
     }
 
     @Override
     public boolean estDeclenchee(Mesure mesure) {
         // TODO C1
-        throw new UnsupportedOperationException("TODO C1");
+        return mesure.temperatureC() < 5;
     }
 }
