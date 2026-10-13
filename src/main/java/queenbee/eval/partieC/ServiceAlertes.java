@@ -2,6 +2,8 @@ package queenbee.eval.partieC;
 
 import queenbee.eval.donnees.Mesure;
 
+import java.util.List;
+
 /**
  * C2 (2,5 pts) — Réécrire ServiceAlertesAvant (paquet avant) en respectant S et D.
  *
@@ -15,10 +17,14 @@ import queenbee.eval.donnees.Mesure;
  */
 public class ServiceAlertes {
 
-    // TODO C2 : déclarer les trois dépendances (private final, typées par les abstractions)
+    private final EvaluateurRisques evaluateur;
+    private final CanalNotification canal;
+    private final JournalAlertes journal;
 
     public ServiceAlertes(EvaluateurRisques evaluateur, CanalNotification canal, JournalAlertes journal) {
-        // TODO C2 : mémoriser les dépendances reçues
+        this.evaluateur = evaluateur;
+        this.canal = canal;
+        this.journal = journal;
     }
 
     /**
@@ -30,7 +36,12 @@ public class ServiceAlertes {
      * @return le nombre d'alertes émises (0 si aucun risque)
      */
     public int traiter(Mesure mesure, String destinataire) {
-        // TODO C2
-        throw new UnsupportedOperationException("TODO C2");
+        List<String> risques = evaluateur.risquesDetectes(mesure);
+        for (String risque : risques) {
+            String message = "[" + mesure.rucheId() + "] " + risque;
+            canal.envoyer(destinataire, message);
+            journal.consigner(message);
+        }
+        return risques.size();
     }
 }
