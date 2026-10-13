@@ -41,7 +41,7 @@ public final class ReglesAlerte {
      */
     public static RegleAlerte surchauffe() {
         // TODO A1
-        throw new UnsupportedOperationException("TODO A1");
+        return m -> m.temperatureC() > SEUIL_SURCHAUFFE_C;
     }
 
     /**  Expressions Lambda
@@ -49,7 +49,7 @@ public final class ReglesAlerte {
      */
     public static RegleAlerte humiditeExcessive() {
         // TODO A2
-        throw new UnsupportedOperationException("TODO A2");
+        return m -> m.humiditePct() > SEUIL_HUMIDITE_PCT;
     }
 
     /**
@@ -59,7 +59,11 @@ public final class ReglesAlerte {
      */
     public static Predicate<Mesure> estPlausible() {
         // TODO A3
-        throw new UnsupportedOperationException("TODO A3");
+        Predicate<Mesure> temperature = m -> m.temperatureC() >= TEMPERATURE_MIN_C && m.temperatureC() <= TEMPERATURE_MAX_C;
+        Predicate<Mesure> humidite = m -> m.humiditePct() >= HUMIDITE_MIN_PCT && m.humiditePct() <= HUMIDITE_MAX_PCT;
+        Predicate<Mesure> poid = m -> m.poidsKg() >= POIDS_MIN_KG && m.poidsKg() <= POIDS_MAX_KG;
+
+        return temperature.and(humidite).and(poid);
     }
 
     /**
@@ -68,6 +72,6 @@ public final class ReglesAlerte {
      */
     public static Comparator<Mesure> plusRecentesDAbord() {
         // TODO A4
-        throw new UnsupportedOperationException("TODO A4");
+        return Comparator.comparing(Mesure::horodatage).reversed();
     }
 }
