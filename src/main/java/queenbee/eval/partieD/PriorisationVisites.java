@@ -26,20 +26,50 @@ import java.util.List;
  */
 public class PriorisationVisites {
 
-    // TODO D : constantes nommées (seuils et points)
+    private static final double SEUIL_SURCHAUFFE_C = 38.0;
+    private static final double SEUIL_HUMIDITE_PCT = 90.0;
+    private static final double SEUIL_PERTE_DE_POIDS_KG = 2.5;
+    private static final int SEUIL_JOURS_SANS_VISITE = 15;
+
+    private static final int POINTS_SURCHAUFFE = 3;
+    private static final int POINTS_HUMIDITE = 2;
+    private static final int POINTS_PERTE_DE_POIDS = 4;
+    private static final int POINTS_VISITE_ANCIENNE = 1;
+
+    private static final Comparator<VisitePrioritaire> PAR_SCORE_DECROISSANT_PUIS_ID =
+            Comparator.comparingInt(VisitePrioritaire::score).reversed()
+                    .thenComparing(VisitePrioritaire::idRuche);
+
+    private record VisitePrioritaire(String idRuche, int score) {
+
+        String libelle() {
+            return idRuche + " : " + score;
+        }
+    }
 
     /**
      * @return les lignes "id : score" des ruches du site ayant un score > 0,
      *         triées par score décroissant puis par identifiant
      */
     public List<String> visitesPrioritaires(List<EtatRuche> etats, String site) {
-        // TODO D
-        throw new UnsupportedOperationException("TODO D");
+        return etats.stream()
+                .filter(etat -> etat.site().equals(site))
+                .map(etat -> new VisitePrioritaire(etat.id(), scoreDeRisque(etat)))
+                .filter(visite -> visite.score() > 0)
+                .sorted(PAR_SCORE_DECROISSANT_PUIS_ID)
+                .map(VisitePrioritaire::libelle)
+                .toList();
     }
 
     /** @return le score de risque d'une ruche (0 à 10) */
     public int scoreDeRisque(EtatRuche etat) {
-        // TODO D
-        throw new UnsupportedOperationException("TODO D");
+        return points(etat.temperatureC() > SEUIL_SURCHAUFFE_C, POINTS_SURCHAUFFE)
+                + points(etat.humiditePct() > SEUIL_HUMIDITE_PCT, POINTS_HUMIDITE)
+                + points(etat.perteDePoidsKg() > SEUIL_PERTE_DE_POIDS_KG, POINTS_PERTE_DE_POIDS)
+                + points(etat.joursDepuisDerniereVisite() > SEUIL_JOURS_SANS_VISITE, POINTS_VISITE_ANCIENNE);
+    }
+
+    private static int points(boolean risquePresent, int pointsDuRisque) {
+        return risquePresent ? pointsDuRisque : 0;
     }
 }
