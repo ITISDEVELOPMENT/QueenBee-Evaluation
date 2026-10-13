@@ -41,7 +41,10 @@ public final class ReglesAlerte {
      */
     public static RegleAlerte surchauffe() {
         // TODO A1
-        throw new UnsupportedOperationException("TODO A1");
+        Mesure ruche = new Mesure("R-BF-01", LUNDI, 34.5, 60, 42.0);
+        RegleAlerte surchauffe = mesure -> mesure.poidsKg() > SEUIL_SURCHAUFFE_C;
+        surchauffe.estDeclenchee(ruche);
+
     }
 
     /**  Expressions Lambda
@@ -49,7 +52,9 @@ public final class ReglesAlerte {
      */
     public static RegleAlerte humiditeExcessive() {
         // TODO A2
-        throw new UnsupportedOperationException("TODO A2");
+        Mesure ruche = new Mesure("R-BF-01", LUNDI, 34.5, 60, 42.0);
+        RegleAlerte humiditeExcessive = mesure -> mesure.humiditePct() > SEUIL_HUMIDITE_PCT;
+        humiditeExcessive.estDeclenchee(ruche);
     }
 
     /**
@@ -59,7 +64,9 @@ public final class ReglesAlerte {
      */
     public static Predicate<Mesure> estPlausible() {
         // TODO A3
+
         throw new UnsupportedOperationException("TODO A3");
+
     }
 
     /**
