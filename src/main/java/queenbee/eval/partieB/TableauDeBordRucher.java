@@ -37,7 +37,10 @@ public class TableauDeBordRucher {
      */
     public List<Mesure> mesuresValides(Predicate<Mesure> plausibilite) {
         // TODO B1
-        throw new UnsupportedOperationException("TODO B1");
+        return mesures.stream()
+                .filter(plausibilite)
+                .distinct()
+                .toList();
     }
 
     /**
@@ -46,7 +49,11 @@ public class TableauDeBordRucher {
      */
     public List<String> ruchesDuSite(String site) {
         // TODO B2
-        throw new UnsupportedOperationException("TODO B2");
+        return ruches.stream()
+                .filter(ruche -> ruche.site().equals(site))
+                .map(Ruche::id)
+                .sorted()
+                .toList();
     }
 
     /**
@@ -55,7 +62,9 @@ public class TableauDeBordRucher {
      */
     public long nombreDeMesuresDeclenchant(RegleAlerte regle) {
         // TODO B3
-        throw new UnsupportedOperationException("TODO B3");
+        return mesures.stream()
+                .filter(regle::estDeclenchee)
+                .count();
     }
 
     /**
@@ -64,7 +73,8 @@ public class TableauDeBordRucher {
      */
     public Map<String, Double> temperatureMoyenneParRuche() {
         // TODO B4
-        throw new UnsupportedOperationException("TODO B4");
+        return mesures.stream()
+                .collect(Collectors.groupingBy(Mesure::rucheId, Collectors.averagingDouble(Mesure::temperatureC)));
     }
 
     /**
@@ -74,7 +84,10 @@ public class TableauDeBordRucher {
      */
     public Optional<Double> dernierPoids(String rucheId) {
         // TODO B5
-        throw new UnsupportedOperationException("TODO B5");
+        return mesures.stream()
+                .filter(mesure -> mesure.rucheId().equals(rucheId))
+                .max(Comparator.comparing(Mesure::horodatage))
+                .map(Mesure::poidsKg);
     }
 
     /**
@@ -84,6 +97,11 @@ public class TableauDeBordRucher {
      */
     public String apiculteursDuSite(String site) {
         // TODO B6
-        throw new UnsupportedOperationException("TODO B6");
+        return ruches.stream()
+                .filter(ruche -> ruche.site().equals(site))
+                .map(Ruche::apiculteur)
+                .distinct()
+                .sorted()
+                .collect(Collectors.joining(", "));
     }
 }
