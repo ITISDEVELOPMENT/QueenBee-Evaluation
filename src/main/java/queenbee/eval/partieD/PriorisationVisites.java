@@ -26,7 +26,16 @@ import java.util.List;
  */
 public class PriorisationVisites {
 
-    // TODO D : constantes nommées (seuils et points)
+
+    private static final double SEUIL_TEMPERATURE_C = 38.0;
+    private static final double SEUIL_HUMIDITE_PCT = 90.0;
+    private static final double SEUIL_PERTE_DE_POIDS_KG = 2.5;
+    private static final int SEUIL_JOURS_SANS_VISITE = 15;
+
+    private static final int POINTS_SURCHAUFFE = 3;
+    private static final int POINTS_HUMIDITE = 2;
+    private static final int POINTS_PERTE_DE_POIDS = 4;
+    private static final int POINTS_VISITE_EN_RETARD = 1;
 
     /**
      * @return les lignes "id : score" des ruches du site ayant un score > 0,
@@ -34,12 +43,43 @@ public class PriorisationVisites {
      */
     public List<String> visitesPrioritaires(List<EtatRuche> etats, String site) {
         // TODO D
-        throw new UnsupportedOperationException("TODO D");
+        return etats.stream()
+                .filter(etat -> etat.site().equals(site))
+                .map(etat -> new ScoreRuche(etat.id(), scoreDeRisque(etat)))
+                .filter(scoreRuche -> scoreRuche.score() > 0)
+                .sorted(Comparator.comparingInt(ScoreRuche::score).reversed()
+                        .thenComparing(ScoreRuche::id))
+                .map(ScoreRuche::enLigne)
+                .toList();
     }
 
     /** @return le score de risque d'une ruche (0 à 10) */
     public int scoreDeRisque(EtatRuche etat) {
-        // TODO D
-        throw new UnsupportedOperationException("TODO D");
+        return pointsSiSurchauffe(etat)
+                + pointsSiHumiditeExcessive(etat)
+                + pointsSiPerteDePoids(etat)
+                + pointsSiVisiteEnRetard(etat);
+    }
+
+    private int pointsSiSurchauffe(EtatRuche etat) {
+        return etat.temperatureC() > SEUIL_TEMPERATURE_C ? POINTS_SURCHAUFFE : 0;
+    }
+
+    private int pointsSiHumiditeExcessive(EtatRuche etat) {
+        return etat.humiditePct() > SEUIL_HUMIDITE_PCT ? POINTS_HUMIDITE : 0;
+    }
+
+    private int pointsSiPerteDePoids(EtatRuche etat) {
+        return etat.perteDePoidsKg() > SEUIL_PERTE_DE_POIDS_KG ? POINTS_PERTE_DE_POIDS : 0;
+    }
+
+    private int pointsSiVisiteEnRetard(EtatRuche etat) {
+        return etat.joursDepuisDerniereVisite() > SEUIL_JOURS_SANS_VISITE ? POINTS_VISITE_EN_RETARD : 0;
+    }
+
+    private record ScoreRuche(String id, int score) {
+        String enLigne() {
+            return id + " : " + score;
+        }
     }
 }
