@@ -16,9 +16,15 @@ import queenbee.eval.donnees.Mesure;
 public class ServiceAlertes {
 
     // TODO C2 : déclarer les trois dépendances (private final, typées par les abstractions)
+    private final EvaluateurRisques evaluateur;
+    private final CanalNotification canal;
+    private final JournalAlertes journal;
 
     public ServiceAlertes(EvaluateurRisques evaluateur, CanalNotification canal, JournalAlertes journal) {
         // TODO C2 : mémoriser les dépendances reçues
+        this.evaluateur = evaluateur;
+        this.canal = canal;
+        this.journal = journal;
     }
 
     /**
@@ -31,6 +37,13 @@ public class ServiceAlertes {
      */
     public int traiter(Mesure mesure, String destinataire) {
         // TODO C2
-        throw new UnsupportedOperationException("TODO C2");
+        int nombreAlertes = 0;
+        for (String risque : evaluateur.risquesDetectes(mesure)) {
+            String message = "[" + mesure.rucheId() + "] " + risque;
+            canal.envoyer(destinataire, message);
+            journal.consigner(message);
+            nombreAlertes++;
+        }
+        return nombreAlertes;
     }
 }

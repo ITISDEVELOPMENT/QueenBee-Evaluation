@@ -10,16 +10,17 @@ import queenbee.eval.donnees.Mesure;
 public class RegleFroidExtreme implements RegleRisque {
 
     // TODO C1 : déclarer la constante du seuil
+    private static final double SEUIL_FROID_EXTREME_C = 5.0;
 
     @Override
     public String nom() {
         // TODO C1
-        throw new UnsupportedOperationException("TODO C1");
+        return "Froid extreme";
     }
 
     @Override
     public boolean estDeclenchee(Mesure mesure) {
         // TODO C1
-        throw new UnsupportedOperationException("TODO C1");
+        return mesure.temperatureC() < SEUIL_FROID_EXTREME_C;
     }
 }
