@@ -13,7 +13,7 @@ import java.util.function.Predicate;
  */
 public class RegleHumiditeExcessive implements RegleRisque {
 
-    // TODO C1 : déclarer la constante du seuil
+    public static final double SEUIL_HUMIDITE = 90;
 
     @Override
     public String nom() {
