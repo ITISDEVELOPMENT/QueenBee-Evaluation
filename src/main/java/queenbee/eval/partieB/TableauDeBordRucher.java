@@ -11,17 +11,7 @@ import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-/**
- * PARTIE B — Streams (6 points).
- *
- * Indicateurs du tableau de bord du coordinateur (UC-G01).
- *
- * RÈGLE : chaque méthode s'écrit avec UN pipeline Stream (source → opérations intermédiaires
- * → une opération terminale), SANS boucle for/while. Une méthode écrite avec une boucle
- * qui passe le test obtient la moitié des points.
- */
 public class TableauDeBordRucher {
-
     private final List<Ruche> ruches;
     private final List<Mesure> mesures;
 
@@ -30,60 +20,46 @@ public class TableauDeBordRucher {
         this.mesures = List.copyOf(mesures);
     }
 
-    /**
-     * B1 (1 pt) — UC-CY02 : garder les mesures qui satisfont le prédicat de plausibilité
-     * reçu en paramètre, puis supprimer les rejeux (trames en double).
-     * Opérateurs attendus : filter, distinct.
-     */
     public List<Mesure> mesuresValides(Predicate<Mesure> plausibilite) {
-        // TODO B1
-        throw new UnsupportedOperationException("TODO B1");
+        return mesures.stream()
+                .filter(plausibilite)
+                .distinct()
+                .toList();
     }
 
-    /**
-     * B2 (1 pt) — Identifiants des ruches d'un site, triés par ordre alphabétique.
-     * Liste vide si le site n'existe pas. Opérateurs attendus : filter, map, sorted.
-     */
     public List<String> ruchesDuSite(String site) {
-        // TODO B2
-        throw new UnsupportedOperationException("TODO B2");
+        return ruches.stream()
+                .filter(ruche -> ruche.site().equals(site))
+                .map(Ruche::id)
+                .sorted()
+                .toList();
     }
 
-    /**
-     * B3 (1 pt) — Nombre de mesures qui déclenchent la règle d'alerte reçue en paramètre.
-     * Opérateurs attendus : filter, count.
-     */
     public long nombreDeMesuresDeclenchant(RegleAlerte regle) {
-        // TODO B3
-        throw new UnsupportedOperationException("TODO B3");
+        return mesures.stream()
+                .filter(regle::estDeclenchee)
+                .count();
     }
 
-    /**
-     * B4 (1 pt) — Température moyenne par ruche : Map idRuche -> moyenne des températures.
-     * Collecteurs attendus : Collectors.groupingBy + Collectors.averagingDouble.
-     */
     public Map<String, Double> temperatureMoyenneParRuche() {
-        // TODO B4
-        throw new UnsupportedOperationException("TODO B4");
+        return mesures.stream()
+                .collect(Collectors.groupingBy(Mesure::rucheId,
+                        Collectors.averagingDouble(Mesure::temperatureC)));
     }
 
-    /**
-     * B5 (1 pt) — Poids relevé lors de la mesure la PLUS RÉCENTE d'une ruche.
-     * Optional vide si la ruche n'a aucune mesure.
-     * Opérateurs attendus : filter, max(Comparator), map sur l'Optional.
-     */
     public Optional<Double> dernierPoids(String rucheId) {
-        // TODO B5
-        throw new UnsupportedOperationException("TODO B5");
+        return mesures.stream()
+                .filter(mesure -> mesure.rucheId().equals(rucheId))
+                .max(Comparator.comparing(Mesure::horodatage))
+                .map(Mesure::poidsKg);
     }
 
-    /**
-     * B6 (1 pt) — Apiculteurs d'un site, sans doublon, triés, séparés par ", ".
-     * Exemple : "Awa Ouedraogo, Issa Kabore". Chaîne vide si le site n'existe pas.
-     * Opérateurs attendus : filter, map, distinct, sorted, Collectors.joining.
-     */
     public String apiculteursDuSite(String site) {
-        // TODO B6
-        throw new UnsupportedOperationException("TODO B6");
+        return ruches.stream()
+                .filter(ruche -> ruche.site().equals(site))
+                .map(Ruche::apiculteur)
+                .distinct()
+                .sorted()
+                .collect(Collectors.joining(", "));
     }
 }
