@@ -20,32 +20,42 @@ import java.util.List;
 public class CanalPush implements CanalNotification {
 
     // TODO C3 : état de connexion + deux listes de Notification (délivrées, en attente)
+    private boolean connecte = false;
+    private final List<Notification> delivrees = new ArrayList<>();
+    private final List<Notification> enAttente = new ArrayList<>();
 
     @Override
     public void envoyer(String destinataire, String message) {
         // TODO C3
-        throw new UnsupportedOperationException("TODO C3");
+        Notification notification = new Notification(destinataire, message);
+        if (connecte) {
+            delivrees.add(notification);
+        } else {
+            enAttente.add(notification);
+        }
     }
 
     public void seConnecter() {
         // TODO C3
-        throw new UnsupportedOperationException("TODO C3");
+        connecte = true;
+        delivrees.addAll(enAttente);
+        enAttente.clear();
     }
 
     public void seDeconnecter() {
         // TODO C3
-        throw new UnsupportedOperationException("TODO C3");
+        connecte = false;
     }
 
     /** @return une copie non modifiable des notifications délivrées (List.copyOf) */
     public List<Notification> delivres() {
         // TODO C3
-        throw new UnsupportedOperationException("TODO C3");
+        return List.copyOf(delivrees);
     }
 
     /** @return une copie non modifiable des notifications en attente */
     public List<Notification> enAttente() {
         // TODO C3
-        throw new UnsupportedOperationException("TODO C3");
+        return List.copyOf(enAttente);
     }
 }

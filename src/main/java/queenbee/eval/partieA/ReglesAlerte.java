@@ -33,6 +33,7 @@ public final class ReglesAlerte {
     public static final double POIDS_MIN_KG = 0.0;
     public static final double POIDS_MAX_KG = 150.0;
 
+
     private ReglesAlerte() {
     }
 
@@ -41,15 +42,14 @@ public final class ReglesAlerte {
      */
     public static RegleAlerte surchauffe() {
         // TODO A1
-        throw new UnsupportedOperationException("TODO A1");
+        return mesure -> mesure.temperatureC() > SEUIL_SURCHAUFFE_C;
     }
-
     /**  Expressions Lambda
      * A2 (0,5 pt) — Humidité excessive : humidité STRICTEMENT supérieure à 90 %.
      */
     public static RegleAlerte humiditeExcessive() {
         // TODO A2
-        throw new UnsupportedOperationException("TODO A2");
+        return mesure -> mesure.humiditePct() > SEUIL_HUMIDITE_PCT;
     }
 
     /**
@@ -59,7 +59,10 @@ public final class ReglesAlerte {
      */
     public static Predicate<Mesure> estPlausible() {
         // TODO A3
-        throw new UnsupportedOperationException("TODO A3");
+        Predicate<Mesure> temperaturePlausible =m -> m.temperatureC() >= TEMPERATURE_MIN_C && m.temperatureC() <= TEMPERATURE_MAX_C;
+        Predicate<Mesure> humiditePlausible = m -> m.humiditePct() >= HUMIDITE_MIN_PCT && m.humiditePct() <= HUMIDITE_MAX_PCT;
+        Predicate<Mesure> poidsPlausible = m -> m.poidsKg() >= POIDS_MIN_KG && m.poidsKg() <= POIDS_MAX_KG;
+        return temperaturePlausible.and(humiditePlausible).and(poidsPlausible);
     }
 
     /**
@@ -68,6 +71,6 @@ public final class ReglesAlerte {
      */
     public static Comparator<Mesure> plusRecentesDAbord() {
         // TODO A4
-        throw new UnsupportedOperationException("TODO A4");
+        return Comparator.comparing(Mesure::horodatage).reversed();
     }
 }
