@@ -2,6 +2,8 @@ package queenbee.eval.partieC;
 
 import queenbee.eval.donnees.Mesure;
 
+import java.util.function.Predicate;
+
 /**
  * C1 (partie 1) — Humidité excessive : humidité STRICTEMENT supérieure à 90 %.
  * Nom du risque (exactement) : "Humidite excessive".

@@ -37,8 +37,7 @@ public class TableauDeBordRucher {
      * Opérateurs attendus : filter, distinct.
      */
     public List<Mesure> mesuresValides(Predicate<Mesure> plausibilite) {
-        // TODO B1
-        throw new UnsupportedOperationException("TODO B1");
+        return mesures.stream().filter(plausibilite).distinct().collect(Collectors.toList());
     }
 
     /**
@@ -46,8 +45,7 @@ public class TableauDeBordRucher {
      * Liste vide si le site n'existe pas. Opérateurs attendus : filter, map, sorted.
      */
     public List<String> ruchesDuSite(String site) {
-        // TODO B2
-        throw new UnsupportedOperationException("TODO B2");
+        return ruches.stream().filter(ruche -> ruche.site().equals(site)).map(Ruche::id).sorted().collect(Collectors.toList());
     }
 
     /**
@@ -55,8 +53,7 @@ public class TableauDeBordRucher {
      * Opérateurs attendus : filter, count.
      */
     public long nombreDeMesuresDeclenchant(RegleAlerte regle) {
-        // TODO B3
-        throw new UnsupportedOperationException("TODO B3");
+        return mesures.stream().filter(mesure -> regle.estDeclenchee(mesure)).count();
     }
 
     /**
@@ -74,8 +71,7 @@ public class TableauDeBordRucher {
      * Opérateurs attendus : filter, max(Comparator), map sur l'Optional.
      */
     public Optional<Double> dernierPoids(String rucheId) {
-        // TODO B5
-        throw new UnsupportedOperationException("TODO B5");
+        return mesures.stream().filter(mesure -> mesure.rucheId().equals(rucheId)).max(Comparator.comparing(Mesure::horodatage)).map(Mesure::poidsKg);
     }
 
     /**
@@ -84,7 +80,6 @@ public class TableauDeBordRucher {
      * Opérateurs attendus : filter, map, distinct, sorted, Collectors.joining.
      */
     public String apiculteursDuSite(String site) {
-        // TODO B6
-        throw new UnsupportedOperationException("TODO B6");
+        return ruches.stream().filter(ruche -> ruche.site().equals(site)).map(Ruche::apiculteur).distinct().sorted().collect(Collectors.joining(", "));
     }
 }
